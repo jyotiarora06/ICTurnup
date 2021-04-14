@@ -1,18 +1,19 @@
 ﻿using System;
 using icTurnup.Pages;
+using icTurnup.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace icTurnup
 {
-    class Program
+    class Program:CommonDriver
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
 
             //launch turnup portal
-            IWebDriver driver = new ChromeDriver();
+            driver = new ChromeDriver();
           
             //login page objects 
             LoginPage loginObj = new LoginPage();
