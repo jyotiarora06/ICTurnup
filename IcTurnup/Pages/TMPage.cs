@@ -1,18 +1,30 @@
 ﻿using System;
 using System.Threading;
+using icTurnup.Utilities;
+using NUnit.Framework;
 using OpenQA.Selenium;
 
 namespace icTurnup.Pages
 {
     public class TMPage
     {
-        public void createTM(IWebDriver driver)
+        public void CreateTM(IWebDriver driver)
         {
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 30);
+            //identify total items
+            String recordCount = driver.FindElement(By.XPath("//*[@data-role='pager']/span[2]")).Text;
+            //remove before characters
+            recordCount = recordCount.Remove(0, 10);
+            //remove after characters
+            int charPos = recordCount.IndexOf(" ");
+            recordCount = recordCount.Substring(0, charPos);
+            int totalItems = Convert.ToInt32(recordCount);
+
             //identify and click Create New button
             IWebElement createnewButton = driver.FindElement(By.XPath("//*[@id='container']/p/a"));
             createnewButton.Click();
 
-            Thread.Sleep(500);
+            wait.ElementExists(driver, "Id", "Code", 2);
 
             //identify and select time type code
             IWebElement material = driver.FindElement(By.XPath("//*[@id='TimeMaterialEditForm']/div/div[1]/div/span[1]/span/span[1]"));
@@ -40,67 +52,111 @@ namespace icTurnup.Pages
             IWebElement saveButton = driver.FindElement(By.Id("SaveButton"));
             saveButton.Click();
 
-            Thread.Sleep(500);
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 30);
+
+
+            //identify total items after creating new TM
+            String totalCount = driver.FindElement(By.XPath("//*[@data-role='pager']/span[2]")).Text;
+            //remove before characters
+            totalCount = totalCount.Remove(0, 10);
+            //remove after characters
+            int pos = totalCount.IndexOf(" ");
+            totalCount = totalCount.Substring(0, pos);
+            int actualTotalItems = Convert.ToInt32(totalCount);
+
 
             //identify and click on Go to Last Page
             IWebElement gotoLastpage = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]"));
-            Thread.Sleep(500);
             gotoLastpage.Click();
 
-            //validate if the user is able to create TM successfully
-            IWebElement itemCode = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]"));
-            IWebElement itemTypeCode = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[2]"));
-            IWebElement itemDesc = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
-            IWebElement itemPrice = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[4]"));
+            
+            wait.ElementExists(driver,"XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
 
-            if (itemCode.Text == "TimeItemJA" && itemTypeCode.Text == "T" && itemDesc.Text == "CreatingTimeItem" && itemPrice.Text == "$232.00")
+            //validate if the user is able to create TM successfully
+            if (actualTotalItems == totalItems + 1)
             {
-                Console.WriteLine("user is able to create TM successfully, test passed");
+               Assert.Pass("user is able to create TM successfully, test passed");
             }
             else
             {
-                Console.WriteLine("user is not able to create TM, test failed");
+                Assert.Fail("user is not able to create TM, test failed");
+            }
+
+            IWebElement actualCode = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]"));
+            IWebElement actualTypeCode = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[2]"));
+            IWebElement actualDesc = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
+            IWebElement actualPrice = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[4]"));
+
+            if (actualCode.Text == "TimeItemJA" && actualTypeCode.Text == "T" && actualDesc.Text == "CreatingTimeItem" && actualPrice.Text == "$232.00")
+            {
+                Assert.Pass("user is able to create TM successfully, test passed");
+            }
+            else
+            {
+                Assert.Fail("user is not able to create TM, test failed");
             }
         }
 
-        public void editTM(IWebDriver driver)
+        public void EditTM(IWebDriver driver)
         {
-            // identify and click Edit button
-            IWebElement edit = driver.FindElement(By.XPath(" //*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
-            edit.Click();
-
-            Thread.Sleep(500);
-            IWebElement desc = driver.FindElement(By.Id("Description"));
-            desc.Clear();
-            desc.SendKeys("EditingTimeItem");
-
-            IWebElement save_Button = driver.FindElement(By.Id("SaveButton"));
-            save_Button.Click();
-            Thread.Sleep(500);
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
 
             //identify and click on Go to Last Page
+            IWebElement gotoLastpage = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]"));
+            gotoLastpage.Click();
+
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[1]", 5);
+
+            //identify and click Edit button
+            IWebElement edit = driver.FindElement(By.XPath(" //*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
+            edit.Click();
+            wait.ElementExists(driver, "Id", "Description", 2);
+
+            //edit description
+            IWebElement description = driver.FindElement(By.Id("Description"));
+            description.Clear();
+            description.SendKeys("EditingTimeItem");
+
+            //identify and click Save button
+            IWebElement saveButton = driver.FindElement(By.Id("SaveButton"));
+            saveButton.Click();
+
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[4]/a[4]", 20);
+            
+            //click on Go to Last Page
             IWebElement goto_Lastpage = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]"));
-            Thread.Sleep(500);
             goto_Lastpage.Click();
+
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 40);
 
             //validate if the user is able to edit TM successfully
 
-            IWebElement editDesc = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
+            IWebElement editedDesc = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
 
-            if (editDesc.Text == "EditingTimeItem")
+            if (editedDesc.Text == "EditingTimeItem")
             {
-                Console.WriteLine("user is able to edit TM successfully, test passed");
+                Assert.Pass("user is able to edit TM successfully, test passed");
             }
             else
             {
-                Console.WriteLine("user is not able to edit TM, test failed");
+                Assert.Fail("user is not able to edit TM, test failed");
             }
-
         }
 
-        public void deleteTM(IWebDriver driver)
+        public void DeleteTM(IWebDriver driver)
         {
-            Thread.Sleep(2000);
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
+
+            //identify total items
+            String recordCount = driver.FindElement(By.XPath("//*[@data-role='pager']/span[2]")).Text;
+            //remove before characters
+            recordCount = recordCount.Remove(0, 10);
+            //remove after characters
+            int charPos = recordCount.IndexOf(" ");
+            recordCount = recordCount.Substring(0,charPos);
+            int totalItems = Convert.ToInt32(recordCount);
+           
+
             // identify and click Delete button
             IWebElement delete = driver.FindElement(By.XPath(" //*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[2]"));
             delete.Click();
@@ -110,24 +166,28 @@ namespace icTurnup.Pages
             var alert_win = driver.SwitchTo().Alert();
             alert_win.Accept();
 
-            Thread.Sleep(2000);
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
+
+            //identify total items after delete
+            String totalCount = driver.FindElement(By.XPath("//*[@data-role='pager']/span[2]")).Text;
+            //remove before characters
+            totalCount = totalCount.Remove(0, 10);
+            //remove after characters
+            int pos = totalCount.IndexOf(" ");
+            totalCount = totalCount.Substring(0,pos);
+            int actualTotalItems = Convert.ToInt32(totalCount);
+
 
             //validate if the user is able to delete TM successfully
 
-            IWebElement delCode = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]"));
-            IWebElement delDesc = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
-            IWebElement delPrice = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[4]"));
-
-
-            if (delCode.Text != "TimeItemJA" && delDesc.Text != "EditingTimeItem" && delPrice.Text != "$232.00")
+            if (actualTotalItems == totalItems - 1)
             {
-                Console.WriteLine("user is able to delete TM successfully, test passed");
+                 Assert.Pass("user is able to delete TM successfully, test passed");
             }
             else
             {
-                Console.WriteLine("user is not able to delete TM, test failed");
+                Assert.Fail("user is not able to delete TM, test failed");
             }
-            
         }
 
     }
