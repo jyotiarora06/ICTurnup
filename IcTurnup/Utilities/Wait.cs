@@ -26,7 +26,7 @@ namespace icTurnup.Utilities
                 if (locator == "CssSelector")
                 {
                     var wait = new WebDriverWait(driver, new TimeSpan(0, 0, seconds));
-                    wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(locatorvalue)));
+                    wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.CssSelector(locatorvalue)));
                 }
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace icTurnup.Utilities
                 if (locator == "CssSelector")
                 {
                     var wait = new WebDriverWait(driver, new TimeSpan(0, 0, seconds));
-                    wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath(locatorvalue)));
+                    wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector(locatorvalue)));
                 }
             }
             catch (Exception ex)
