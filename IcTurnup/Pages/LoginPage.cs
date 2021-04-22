@@ -8,7 +8,18 @@ namespace icTurnup.Pages
 {
     public class LoginPage
     {
-        public void LoginSteps(IWebDriver driver)
+        IWebDriver driver;
+        IWebElement Username => driver.FindElement(By.Id("UserName"));
+        IWebElement Password => driver.FindElement(By.Id("Password"));
+        IWebElement LoginButton => driver.FindElement(By.XPath("//*[@id='loginForm']/form/div[3]/input[1]"));
+        IWebElement HelloHari => driver.FindElement(By.XPath("//*[@id='logoutForm']/ul/li/a"));
+
+        public LoginPage(IWebDriver driver)
+        {
+           this.driver = driver;
+        }
+
+        public void LoginSteps()
         {
             driver.Navigate().GoToUrl("http://horse.industryconnect.io/Account/Login?ReturnUrl=%2f");
 
@@ -19,17 +30,17 @@ namespace icTurnup.Pages
 
             try
             {
-                //identify and enter username
-                IWebElement username = driver.FindElement(By.Id("UserName"));
-                username.SendKeys("hari");
+                //Enter username
+                
+                Username.SendKeys("hari");
 
-                //identify and enter password
-                IWebElement password = driver.FindElement(By.Id("Password"));
-                password.SendKeys("123123");
+                //Enter password
+                
+                Password.SendKeys("123123");
 
-                //identify and click login button
-                IWebElement loginButton = driver.FindElement(By.XPath("//*[@id='loginForm']/form/div[3]/input[1]"));
-                loginButton.Click();
+                //Click login button
+                
+                LoginButton.Click();
             }
             catch(Exception msg)
             {
@@ -39,8 +50,8 @@ namespace icTurnup.Pages
             wait.ElementExists(driver, "XPath", "//*[@id='logoutForm']/ul/li/a", 2);
 
             //validate if the user is logged in successfully
-            IWebElement helloHari = driver.FindElement(By.XPath("//*[@id='logoutForm']/ul/li/a"));
-            Assert.That(helloHari.Text,Is.EqualTo("Hello hari!"),"Test failed");
+            
+            Assert.That(HelloHari.Text,Is.EqualTo("Hello hari!"),"Test failed");
 
             //if (helloHari.Text == "Hello hari!")
             //{

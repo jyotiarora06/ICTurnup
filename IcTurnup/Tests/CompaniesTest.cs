@@ -17,24 +17,24 @@ namespace icTurnup.Tests
         public void CreateCompanyTest()
         {
             //home page objects
-            HomePage homeObj = new HomePage();
-            homeObj.NavigateToCompanies(driver);
+            HomePage homeObj = new HomePage(driver);
+            homeObj.NavigateToCompanies();
 
             //Companies page objects
-            CompaniesPage companyObj = new CompaniesPage();
-            companyObj.CreateCompany(driver);
+            CompaniesPage companyObj = new CompaniesPage(driver);
+            companyObj.CreateCompany();
         }
 
         [Test]
         public void EditCompanyTest()
         {
             //home page objects
-            HomePage homeObj = new HomePage();
-            homeObj.NavigateToCompanies(driver);
+            HomePage homeObj = new HomePage(driver);
+            homeObj.NavigateToCompanies();
 
             //TM page objects
-            CompaniesPage companyObj = new CompaniesPage();
-            companyObj.EditCompany(driver);
+            CompaniesPage companyObj = new CompaniesPage(driver);
+            companyObj.EditCompany();
         }
     }
 }

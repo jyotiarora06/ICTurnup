@@ -7,35 +7,37 @@ namespace icTurnup.Pages
 {
     public class HomePage
     {
-        public void NavigateToTM(IWebDriver driver)
+        IWebDriver driver;
+        IWebElement AdministrationDropdown => driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a"));
+        IWebElement TimeMaterialsMenuitem => driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a"));
+        IWebElement CompaniesMenuitem => driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[6]/a"));
+
+        public HomePage(IWebDriver driver)
         {
-            //identify and click Administration dropdown
-            IWebElement administrationDropdown = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a"));
-            administrationDropdown.Click();
+            this.driver = driver;
+        }
 
+        public void NavigateToTM()
+        {
+            //Click Administration dropdown
+            AdministrationDropdown.Click();
             wait.ElementExists(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a", 5);
-            //Thread.Sleep(500);
+        
 
-            //identify and click Time & Materials menuitem
-            IWebElement timematerialsMenuitem = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a"));
-            timematerialsMenuitem.Click();
-
+            //Click Time & Materials menuitem
+            TimeMaterialsMenuitem.Click();
             wait.ElementExists(driver, "XPath", "//*[@id='container']/p/a", 5);
         }
 
-        public void NavigateToCompanies(IWebDriver driver)
+        public void NavigateToCompanies()
         {
-            //identify and click Administration dropdown
-            IWebElement administrationDropdown = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a"));
-            administrationDropdown.Click();
-
+            //Click Administration dropdown
+            AdministrationDropdown.Click();
             wait.ElementExists(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[6]/a", 5);
 
 
-            //identify and click Companies menuitem
-            IWebElement companiesMenuitem = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[6]/a"));
-            companiesMenuitem.Click();
-
+            //Click Companies menuitem
+            CompaniesMenuitem.Click();
             wait.ElementExists(driver, "XPath", "//*[@id='container']/p/a", 5);
         }
     }

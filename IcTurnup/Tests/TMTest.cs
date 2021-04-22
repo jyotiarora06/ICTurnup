@@ -16,36 +16,36 @@ namespace icTurnup.Tests
         public void CreateTMTest()
         {
             //home page objects
-            HomePage homeObj = new HomePage();
-            homeObj.NavigateToTM(driver);
+            HomePage homeObj = new HomePage(driver);
+            homeObj.NavigateToTM();
 
             //TM page objects
-            TMPage tmObj = new TMPage();
-            tmObj.CreateTM(driver);
+            TMPage tmObj = new TMPage(driver);
+            tmObj.CreateTM();
         }
 
         [Test]
         public void EditTMTest()
         {
             //home page objects
-            HomePage homeObj = new HomePage();
-            homeObj.NavigateToTM(driver);
+            HomePage homeObj = new HomePage(driver);
+            homeObj.NavigateToTM();
 
             //TM page objects
-            TMPage tmObj = new TMPage();
-            tmObj.EditTM(driver);
+            TMPage tmObj = new TMPage(driver);
+            tmObj.EditTM();
         }
 
         [Test]
         public void DeleteTMTest()
         {
             //home page objects
-            HomePage homeObj = new HomePage();
-            homeObj.NavigateToTM(driver);
+            HomePage homeObj = new HomePage(driver);
+            homeObj.NavigateToTM();
 
             //TM page objects
-            TMPage tmObj = new TMPage();
-            tmObj.DeleteTM(driver);
+            TMPage tmObj = new TMPage(driver);
+            tmObj.DeleteTM();
         }
     }
 }
