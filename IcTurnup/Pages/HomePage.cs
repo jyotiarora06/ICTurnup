@@ -17,13 +17,16 @@ namespace icTurnup.Pages
             this.driver = driver;
         }
 
-        public void NavigateToTM()
+        public void ClickAdministrationDropdown()
         {
             //Click Administration dropdown
             AdministrationDropdown.Click();
             wait.ElementExists(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a", 5);
-        
 
+        }
+
+        public void NavigateToTM()
+        {
             //Click Time & Materials menuitem
             TimeMaterialsMenuitem.Click();
             wait.ElementExists(driver, "XPath", "//*[@id='container']/p/a", 5);
@@ -31,11 +34,6 @@ namespace icTurnup.Pages
 
         public void NavigateToCompanies()
         {
-            //Click Administration dropdown
-            AdministrationDropdown.Click();
-            wait.ElementExists(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[6]/a", 5);
-
-
             //Click Companies menuitem
             CompaniesMenuitem.Click();
             wait.ElementExists(driver, "XPath", "//*[@id='container']/p/a", 5);

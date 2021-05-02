@@ -17,11 +17,20 @@ namespace icTurnup.Tests
         {
             //home page objects
             HomePage homeObj = new HomePage(driver);
+            homeObj.ClickAdministrationDropdown();
             homeObj.NavigateToTM();
 
             //TM page objects
             TMPage tmObj = new TMPage(driver);
-            tmObj.CreateTM();
+            tmObj.ClickCreateNew();
+            tmObj.SelectTimeTypeCode();
+            tmObj.EnterCode(null);
+            tmObj.EnterDescription(null);
+            tmObj.EnterPrice();
+            tmObj.ClickSave();
+            tmObj.ClickLastPage();
+            bool isTMCreated = tmObj.ValidateTMIsCreated();
+            Assert.IsTrue(isTMCreated);
         }
 
         [Test]
@@ -29,11 +38,18 @@ namespace icTurnup.Tests
         {
             //home page objects
             HomePage homeObj = new HomePage(driver);
+            homeObj.ClickAdministrationDropdown();
             homeObj.NavigateToTM();
 
             //TM page objects
             TMPage tmObj = new TMPage(driver);
-            tmObj.EditTM();
+            tmObj.ClickLastPage();
+            tmObj.ClickEdit();
+            tmObj.EditDescription(null);
+            tmObj.ClickSave();
+            tmObj.ClickLastPage();
+            bool isTMEdited = tmObj.ValidateTMIsEdited();
+            Assert.IsTrue(isTMEdited);
         }
 
         [Test]
@@ -41,11 +57,15 @@ namespace icTurnup.Tests
         {
             //home page objects
             HomePage homeObj = new HomePage(driver);
+            homeObj.ClickAdministrationDropdown();
             homeObj.NavigateToTM();
 
             //TM page objects
             TMPage tmObj = new TMPage(driver);
-            tmObj.DeleteTM();
+            tmObj.ClickDelete();
+            tmObj.ClickOkButton();
+            bool isTMDeleted = tmObj.ValidateTMIsDeleted();
+            Assert.IsTrue(isTMDeleted);
         }
     }
 }

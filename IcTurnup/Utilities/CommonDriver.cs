@@ -20,8 +20,8 @@ namespace icTurnup.Utilities
             driver = new ChromeDriver();
 
             //login page objects 
-            LoginPage loginObj = new LoginPage(driver);
-            loginObj.LoginSteps();
+            LoginPage loginPage = new LoginPage(driver);
+            loginPage.login(null, null);
         }
 
         [OneTimeTearDown]

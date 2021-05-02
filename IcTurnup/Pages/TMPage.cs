@@ -8,7 +8,11 @@ namespace icTurnup.Pages
 {
     public class TMPage
     {
-        IWebDriver driver;
+        private IWebDriver driver;
+        private CompaniesPage companiesPageObj;
+        private int totalItemsCount;
+        private int actualTotalItemsCount;
+
         IWebElement CreateNewButton => driver.FindElement(By.XPath("//*[@id='container']/p/a"));
         IWebElement MaterialTypeCode => driver.FindElement(By.XPath("//*[@id='TimeMaterialEditForm']/div/div[1]/div/span[1]/span/span[1]"));
         IWebElement TimeTypeCode => driver.FindElement(By.XPath("//*[@id='TypeCode_listbox']/li[2]"));
@@ -18,153 +22,188 @@ namespace icTurnup.Pages
         IWebElement Price => driver.FindElement(By.XPath("//*[@id='Price']"));
         IWebElement SaveButton => driver.FindElement(By.Id("SaveButton"));
         IWebElement GotoLastpage => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]"));
-        IWebElement actualCode => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]"));
-        IWebElement actualTypeCode => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[2]"));
-        IWebElement actualDesc => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
-        IWebElement actualPrice => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[4]"));
+        IWebElement ActualCode => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]"));
+        IWebElement ActualTypeCode => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[2]"));
+        IWebElement ActualDesc => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
+        IWebElement ActualPrice => driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[4]"));
         IWebElement EditButton => driver.FindElement(By.XPath(" //*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
         IWebElement DeleteButton => driver.FindElement(By.XPath(" //*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[2]"));
-
-
+        
+       
         public TMPage(IWebDriver driver)
         {
             this.driver = driver;
+            companiesPageObj = new CompaniesPage(driver);
         }
 
-        public int ItemsCount()
+        public bool ValidateAtTMPage()
         {
-            //identify total items
-            String recordCount = driver.FindElement(By.XPath("//*[@data-role='pager']/span[2]")).Text;
-            //remove before characters
-            recordCount = recordCount.Remove(0, 10);
-            //remove after characters
-            int charPos = recordCount.IndexOf(" ");
-            recordCount = recordCount.Substring(0, charPos);
-            int totalItems = Convert.ToInt32(recordCount);
-            return totalItems;
+            return CreateNewButton.Displayed;
         }
 
-        public void CreateTM()
+        public void ClickCreateNew()
         {
             wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 30);
 
-            //Total items before creating TM
-            int totalItems = ItemsCount();
+            //identify total items before creating TM
+
+            totalItemsCount = companiesPageObj.IdentifyTheTotalItemsCount();
+
 
             //Click Create New button
             CreateNewButton.Click();
             wait.ElementExists(driver, "Id", "Code", 2);
+        }
 
+        public void SelectTimeTypeCode()
+        {
             //Select time type code
             MaterialTypeCode.Click();
             TimeTypeCode.Click();
+        }
 
+        public void EnterCode(string code)
+        {
             //Enter Code
-            Code.SendKeys("TimeItemJA");
+            if(code == null)
+            { 
+                Code.SendKeys("TimeItemJA");
+            }
+            else
+            {
+                Code.SendKeys(code);
+            }
+        }
 
+        public void EnterDescription(string description)
+        {
             //Enter Description
-            Description.SendKeys("CreatingTimeItem");
+           
+            if (description == null)
+            {
+                Description.SendKeys("CreatingTimeItem");
+            }
+            else
+            {
+                Description.SendKeys(null);
+            }
+        }
 
+        public void EnterPrice()
+        {
             //Enter Price per unit
             SelectPricetextbox.Click();
             Price.SendKeys("232");
 
-            //Click Save button
+        }
+
+        public void ClickSave()
+        {
+            // Click Save button
             SaveButton.Click();
             wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 30);
 
 
             //Total items after creating TM
-            int actualTotalItems = ItemsCount();
+            actualTotalItemsCount = companiesPageObj.IdentifyTheTotalItemsCount();
+        }
 
+        public void ClickLastPage()
+        {
 
             //Click on Go to Last Page
             GotoLastpage.Click();
-            wait.ElementExists(driver,"XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
+        }
+
+        public bool ValidateTMIsCreated()
+        {
 
             //validate if the user is able to create TM successfully
-            if (actualTotalItems == totalItems + 1)
+            if (actualTotalItemsCount == totalItemsCount + 1 && ActualCode.Text == "TimeItemJA" && ActualTypeCode.Text == "T" && ActualDesc.Text == "CreatingTimeItem" && ActualPrice.Text == "$232.00")
             {
-               Assert.Pass("user is able to create TM successfully, test passed");
+                //Assert.Pass("user is able to create TM successfully, test passed");
+                return true;
             }
             else
             {
-                Assert.Fail("user is not able to create TM, test failed");
-            }
-
-            if (actualCode.Text == "TimeItemJA" && actualTypeCode.Text == "T" && actualDesc.Text == "CreatingTimeItem" && actualPrice.Text == "$232.00")
-            {
-                Assert.Pass("user is able to create TM successfully, test passed");
-            }
-            else
-            {
-                Assert.Fail("user is not able to create TM, test failed");
+                //Assert.Fail("user is not able to create TM, test failed");
+                return false;
             }
         }
 
-        public void EditTM()
+        public void ClickEdit()
         {
-            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
-
-            //Click on Go to Last Page
-            GotoLastpage.Click();
-            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[1]", 5);
-
             //Click Edit button
             EditButton.Click();
             wait.ElementExists(driver, "Id", "Description", 2);
+        }
 
+        public void EditDescription(string description)
+        {
             //Edit description
             Description.Clear();
+            if(description == null)
+            { 
             Description.SendKeys("EditingTimeItem");
-
-            //Click Save button
-            SaveButton.Click();
-            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[4]/a[4]", 20);
-
-            //click on Go to Last Page
-            GotoLastpage.Click();
-            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 40);
-
-            //validate if the user is able to edit TM successfully
-            if (actualDesc.Text == "EditingTimeItem")
-            {
-                Assert.Pass("user is able to edit TM successfully, test passed");
             }
             else
             {
-                Assert.Fail("user is not able to edit TM, test failed");
+                Description.SendKeys(null);
             }
         }
 
-        public void DeleteTM()
+        public bool ValidateTMIsEdited()
         {
-            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
+            //validate if the user is able to edit TM successfully
+            if (ActualDesc.Text == "EditingTimeItem")
+            {
+                //Assert.Pass("user is able to edit TM successfully, test passed");
+                return true;
+            }
+            else
+            {
+                //Assert.Fail("user is not able to edit TM, test failed");
+                return false;
+            }
+        }
 
-            //total items before deleting 
-            int totalItems = ItemsCount();
+        public void ClickDelete()
+        {
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 30);
 
+            //identify total items before creating TM
+
+            totalItemsCount = companiesPageObj.IdentifyTheTotalItemsCount();
 
             // Click Delete button
             DeleteButton.Click();
 
+        }
 
+        public void ClickOkButton()
+        {
             //Accept the Alert message 
             var alert_win = driver.SwitchTo().Alert();
             alert_win.Accept();
-            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 20);
+            wait.ElementExists(driver, "XPath", "//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]", 30);
 
             //total items after delete
-            int actualTotalItems = ItemsCount();
+            actualTotalItemsCount = companiesPageObj.IdentifyTheTotalItemsCount();
+        }
 
-            //validate if the user is able to delete TM successfully
-            if (actualTotalItems == totalItems - 1)
+        public bool ValidateTMIsDeleted()
+        {    //validate if the user is able to delete TM successfully
+            if (actualTotalItemsCount == totalItemsCount - 1)
             {
-                 Assert.Pass("user is able to delete TM successfully, test passed");
+                //Assert.Pass("user is able to delete TM successfully, test passed");
+                return true;
             }
             else
             {
-                Assert.Fail("user is not able to delete TM, test failed");
+                //Assert.Fail("user is not able to delete TM, test failed");
+                return false;
+
             }
         }
 

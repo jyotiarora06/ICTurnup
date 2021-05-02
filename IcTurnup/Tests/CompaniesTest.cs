@@ -18,11 +18,22 @@ namespace icTurnup.Tests
         {
             //home page objects
             HomePage homeObj = new HomePage(driver);
+            homeObj.ClickAdministrationDropdown();
             homeObj.NavigateToCompanies();
 
             //Companies page objects
             CompaniesPage companyObj = new CompaniesPage(driver);
-            companyObj.CreateCompany();
+            companyObj.ClickCreateNewButton();
+            companyObj.EnterName(null);
+            companyObj.ClickEditContactButton();
+            companyObj.EnterFirstName(null);
+            companyObj.EnterLastName(null);
+            companyObj.EnterPhone();
+            companyObj.ClickSaveContactButton();
+            companyObj.ClickSaveCompanyButton();
+            companyObj.ClickLastPage();
+            bool isCompanyCreated = companyObj.ValidateTheCompanyIsCreated();
+            Assert.IsTrue(isCompanyCreated);
         }
 
         [Test]
@@ -30,11 +41,18 @@ namespace icTurnup.Tests
         {
             //home page objects
             HomePage homeObj = new HomePage(driver);
+            homeObj.ClickAdministrationDropdown();
             homeObj.NavigateToCompanies();
 
             //TM page objects
             CompaniesPage companyObj = new CompaniesPage(driver);
-            companyObj.EditCompany();
+            companyObj.ClickLastPage();
+            companyObj.ClickEditButton();
+            companyObj.EditName(null);
+            companyObj.ClickSaveCompanyButton();
+            companyObj.ClickLastPage();
+            bool isCompanyEdited = companyObj.ValidateTheCompanyIsEdited();
+            Assert.IsTrue(isCompanyEdited);
         }
     }
 }
