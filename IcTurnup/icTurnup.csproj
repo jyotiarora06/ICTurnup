@@ -18,6 +18,7 @@
     <PackageReference Include="SpecFlow.NUnit" Version="3.7.38" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.7.38" />
     <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="ExtentReports" Version="4.1.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\" />
@@ -25,6 +26,7 @@
     <Folder Include="Utilities\" />
     <Folder Include="FeatureFiles\" />
     <Folder Include="Steps\" />
+    <Folder Include="Hooks\" />
   </ItemGroup>
   <ItemGroup>
     <SpecFlowFeatureFiles Update="Feature Files\LoginPage.feature">
